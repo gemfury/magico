@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'eventmachine'
+require 'em-websocket'
+require 'fssm'
+
+root_path = File.expand_path(ARGV[0] || '.', Dir.pwd)
+
+EM.run {
+  SKIP_PARTS = %w(erb scss)
+  ws_opts = { :host => "0.0.0.0", :port => 8787 }
+  @clients = []
+
+  EventMachine::WebSocket.start(ws_opts) do |ws|
+    ws.onopen  { puts "Connection open"; @clients << ws }
+    ws.onclose { puts "Connection closed"; @clients.delete(ws) }
+  end
+
+  Thread.new do
+    onChange = lambda { |base, relative|
+      parts = File.basename(relative).split('.') - SKIP_PARTS
+      @clients.each { |ws| ws.send(parts.join('.')) }
+    }
+
+    FSSM.monitor(root_path, '**/*css*') do
+      update(&onChange)
+      create(&onChange)
+    end
+  end
+
+  puts "Magico is watching and waiting #{root_path}/..."
+}
