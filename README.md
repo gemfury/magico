@@ -1,24 +1,30 @@
 # Magico
 
-TODO: Write a gem description
+Auto-update for your CSS stylesheets without refreshing the browser
 
-## Installation
+## Requirements
 
-Add this line to your application's Gemfile:
-
-    gem 'magico'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install magico
+* Rails
+* jQuery
+* [WebSockets-compatible browser](http://caniuse.com/#search=Websocket)
 
 ## Usage
 
-TODO: Write usage instructions here
+Add this line to your application's Gemfile:
+
+    group :development do
+      gem 'magico'
+    end
+
+Add this to your layout (after you load jQuery):
+
+    <% if Rails.env.development? %>
+      <%= javascript_include_tag 'magico' %>
+    <% end %>
+
+Start the server in your Rails app path:
+
+    $ magico
 
 ## Contributing
 
