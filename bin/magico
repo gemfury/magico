@@ -2,7 +2,7 @@
 require 'rubygems'
 require 'eventmachine'
 require 'em-websocket'
-require 'fssm'
+require 'listen'
 
 root_path = File.expand_path(ARGV[0] || '.', Dir.pwd)
 
@@ -17,14 +17,11 @@ EM.run {
   end
 
   Thread.new do
-    onChange = lambda { |base, relative|
-      parts = File.basename(relative).split('.') - SKIP_PARTS
-      @clients.each { |ws| ws.send(parts.join('.')) }
-    }
-
-    FSSM.monitor(root_path, '**/*css*') do
-      update(&onChange)
-      create(&onChange)
+    Listen.to(root_path, filter: /.*\.css.*/) do |m, a, r|
+      (m + a + r).each do |path|
+        parts = File.basename(path).split('.') - SKIP_PARTS
+        @clients.each { |ws| ws.send(parts.join('.')) }
+      end
     end
   end
 
