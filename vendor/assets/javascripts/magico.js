@@ -7,7 +7,7 @@ Magico = {
     if(!klass) {
       console.log('Magico is not compatible with your browser');
     } else {
-      var socket = new klass('ws://localhost:8787/');
+      var socket = new klass('ws://' + window.location.hostname + ':8787/');
       socket.onopen = function () {
         console.log("Connected to Magico server!");
       };
