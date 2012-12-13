@@ -1,5 +1,7 @@
 # Magico
 
+[![Gem Version](https://fury-badge.herokuapp.com/rb/magico.png)](http://badge.fury.io/rb/magico)
+
 Auto-update for your CSS stylesheets without refreshing the browser
 
 ## Requirements
