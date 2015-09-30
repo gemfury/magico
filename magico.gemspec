@@ -16,6 +16,6 @@ Gem::Specification.new do |gem|
   gem.version       = Magico::VERSION
 
   gem.add_runtime_dependency 'eventmachine', '>= 0.12.0'
-  gem.add_runtime_dependency 'em-websocket', '~> 0.3.0'
-  gem.add_runtime_dependency 'listen', '~> 0.7.0'
+  gem.add_runtime_dependency 'em-websocket', '~> 0.5.0'
+  gem.add_runtime_dependency 'listen', '~> 3.0'
 end

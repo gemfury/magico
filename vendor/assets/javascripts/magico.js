@@ -14,8 +14,8 @@ Magico = {
 
       socket.onmessage = function(message) {
         var files = message.data.split(','); // TODO: Use JSON
-        var filter = new RegExp("(" + files.join('|') + ")");
-        Magico.reloadStylesheets(filter);
+        var re = "(" + files.join('|') + ")(\.self)?\.css";
+        Magico.reloadStylesheets(new RegExp(re));
       };
     }
   },

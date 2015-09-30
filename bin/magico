@@ -7,9 +7,9 @@ require 'listen'
 root_path = File.expand_path(ARGV[0] || '.', Dir.pwd)
 
 EM.run {
-  SKIP_PARTS = %w(erb scss)
+  SKIP_PARTS = %w(erb scss css)
   ws_opts = { :host => "0.0.0.0", :port => 8787 }
-  @clients = []
+  @clients, @lstn = [], nil
 
   EventMachine::WebSocket.start(ws_opts) do |ws|
     ws.onopen  { puts "Connection open"; @clients << ws }
@@ -17,13 +17,22 @@ EM.run {
   end
 
   Thread.new do
-    Listen.to(root_path, filter: /.*\.css.*/) do |m, a, r|
+   @lstn = Listen.to(root_path, filter: /.*\.css\.*/) do |m, a, r|
       (m + a + r).each do |path|
         parts = File.basename(path).split('.') - SKIP_PARTS
         @clients.each { |ws| ws.send(parts.join('.')) }
       end
-    end
+   end.tap(&:start)
   end
+
+  def shutdown_magico
+    puts "Shutting down ... "
+    @lstn && @lstn.stop
+    EM.stop
+  end
+
+  Signal.trap('INT') { shutdown_magico }
+  Signal.trap('TERM'){ shutdown_magico }
 
   puts "Magico is watching and waiting #{root_path}/..."
 }
