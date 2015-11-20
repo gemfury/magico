@@ -6,23 +6,25 @@ Auto-update for your CSS stylesheets without refreshing the browser
 
 ## Requirements
 
-* Rails
-* jQuery
+* [Rails](http://rubyonrails.org)
+* [jQuery](http://jquery.com)
 * [WebSockets-compatible browser](http://caniuse.com/#search=Websocket)
 
 ## Usage
 
-Add this line to your application's Gemfile:
+Add this line to your application's `Gemfile`:
 
-    group :development do
-      gem 'magico'
-    end
+```ruby
+group :development do
+  gem 'magico'
+end
+```
 
 Add this to your layout (after you load jQuery):
 
-    <% if Rails.env.development? %>
-      <%= javascript_include_tag 'magico' %>
-    <% end %>
+```erb
+<%= javascript_include_tag 'magico' if Rails.env.development? %>
+```
 
 Start the server in your Rails app path:
 
